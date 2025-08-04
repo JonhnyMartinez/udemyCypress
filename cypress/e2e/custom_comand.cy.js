@@ -1,7 +1,7 @@
 /// <reference types="cypress"/>
-require("cypress-plugin-tab");
+/*require("cypress-plugin-tab");
 import "cypress-xpath";
-const XLSX = require("xlsx");
+const XLSX = require("xlsx");*/
 //import "cypress-file-upload";
 import { faker } from "@faker-js/faker";
 
@@ -9,6 +9,7 @@ let tp = 1500;
 let ttiempo_espera = 5000;
 let nombreGlobal = "";
 let sessionCookies = [];
+
 function scroll(x, y, t) {
   cy.window().then((win) => {
     win.scrollBy(x, y);
@@ -23,6 +24,11 @@ Cypress.on("uncaught:exception", (err, runnable) => {
 describe("Funciones Propias personalizadas", () => {
   beforeEach(() => {
     cy.VentanaXY(1900, 900);
+
+    cy.intercept("GET", "https://mcl.spur.us/**", {
+      statusCode: 200,
+      body: {},
+    });
   });
 
   it("Login", () => {
@@ -52,18 +58,21 @@ describe("Funciones Propias personalizadas", () => {
     );
   });
   it.only("funciones uno", () => {
+    //cy.Click_Css("");
+    //cy.Texto_Xpath('//*[@id="UserFirstName-kxKb"]', "Rodrigo", tp);
     cy.Ventana_Inicio(
       "https://www.salesforce.com/mx/form/signup/freetrial-sales-ee/?d=70130000000EqoPAAS",
       "Sales",
       tp
     );
-    //cy.Click_Css("");
-    cy.Texto_Xpath('//*[@id="UserFirstName-kxKb"]', "Rodrigo", tp);
-    cy.Texto_Name("userFirstName", "Juan", tp);
-    cy.Texto_Etiqueta("Nombre", "Pedro", tp);
+    cy.textoSelector(,"Rodrigo","",tp)
+    //cy.Texto_Name("UserFirstName", "Juan", tp);
+    //cy.Texto_Etiqueta("Nombre", "Pedro", tp);
+    //cy.Texto_Css(".firstName", "Juan", tp);
+    /*cy.Texto_Etiqueta("Nombre", "Pedro", tp);
     cy.Texto_Etiqueta("Apellidos", "Perez", tp);
     cy.Texto_Etiqueta("Posición", "Sistemas", tp);
     cy.Validar_Error_Xpath("", "Introduzca una correo electrónico", tp);
-    cy.Validar_Error_Xpath("", "Introduzca un número de teléfono", tp);
+    cy.Validar_Error_Xpath("", "Introduzca un número de teléfono", tp);*/
   });
 });

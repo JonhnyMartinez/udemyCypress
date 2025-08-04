@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+/// <reference types="cypress" />
 require('cypress-plugin-tab');
 import 'cypress-xpath';
 const XLSX = require('xlsx');

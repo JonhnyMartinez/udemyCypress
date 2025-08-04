@@ -1,4 +1,4 @@
-/// <reference types="Cypress" />
+/// <reference types="cypress" />
 // require('cypress-plugin-tab');
 // npm install -D cypress-xpath
 import 'cypress-xpath';

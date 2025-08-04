@@ -23,8 +23,10 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-import { faker } from "@faker-js/faker";
+//import { faker } from "@faker-js/faker";
+//import cypress from "cypress";
 import cypress from "cypress";
+import "cypress-real-events/support";
 Cypress.Commands.add(
   "Login_Basico",
   (s1, username, s2, password, button, tiempo = 1000) => {
@@ -91,8 +93,143 @@ Cypress.Commands.add("Click_Css", (selector, tiempo = 1000) => {
 Cypress.Commands.add("Texto_Xpath", (selector, texto, tiempo = 1000) => {
   cy.xpath(selector).should("be.visible").first().type(texto);
   cy.wait(tiempo);
-  cy.log("texto: " + texto)
+  cy.log("texto: " + texto);
 });
+Cypress.Commands.add("Texto_Name", (selector, texto, tiempo = 1000) => {
+  cy.get(`[name="${selector}"]`)
+    .scrollIntoView()
+    .should("be.visible")
+    .clear()
+    .type(texto);
+  cy.wait(tiempo);
+  cy.log("Texto: " + selector + " " + texto);
+});
+
+Cypress.Commands.add("Texto_Etiqueta", (label, texto, tiempo = 1000) => {
+  cy.contains("label", label)
+    .invoke("attr", "for")
+    .then((fieldId) => {
+      cy.get(`#${fieldId}`)
+        .first()
+        .should("be.visible")
+        .clear()
+        .type(texto)
+        .wait(tiempo)
+        .log("Texto: " + texto);
+    });
+});
+Cypress.Commands.add("Texto_Css", (selector, texto, tiempo = 1000) => {
+  cy.get(selector)
+    .scrollIntoView()
+    .should("be.visible")
+    .first()
+    //.clear()
+    .type(texto);
+  cy.wait(tiempo);
+  cy.log("Texto: " + texto);
+});
+Cypress.Commands.add(
+  "textoSelector",
+  (selector, texto, selectorType = "css", tiempo = 1000) => {
+    switch (selectorType) {
+      case "xpath":
+        cy.xpath(selector)
+          .should("be.visible")
+          .first()
+          .then(($el) => {
+            const existingText = $el.text();
+            if (existingText) {
+              $el.clear();
+            }
+            if ($el.is("input,textarea")) {
+              $el.val(texto);
+            } else {
+              $el.val(texto);
+            }
+          });
+        cy.wait(tiempo);
+        cy.log("Texto: " + texto);
+        break;
+      case "css":
+        cy.get(selector)
+          .scrollIntoView()
+          .should("be.visible")
+          .then(($el) => {
+            const existingText = $el.text();
+            if (existingText) {
+              $el.clear();
+            }
+            if ($el.is("input,textarea")) {
+              $el.val(texto);
+            } else {
+              $el.val(texto);
+            }
+          });
+        cy.wait(tiempo);
+        cy.log("Texto: " + texto);
+        break;
+      case "name":
+        cy.get(`[name="${selector}"]`)
+          .scrollIntoView()
+          .should("be.visible")
+          .then(($el) => {
+            const existingText = $el.text();
+            if (existingText) {
+              $el.clear();
+            }
+            if ($el.is("input,textarea")) {
+              $el.val(texto);
+            } else {
+              $el.val(texto);
+            }
+          });
+        cy.wait(tiempo);
+        cy.log("Texto: " + texto);
+        break;
+      case "label":
+        cy.contains("label", selector)
+          .invoke("attr", "for")
+          .then((fieldId) => {
+            cy.get(`#${fieldId}`)
+              .first()
+              .should("be.visible")
+              .then(($el) => {
+                if (existingText) {
+                  $el.clear();
+                }
+                if ($el.is("input,textarea")) {
+                  $el.val(texto);
+                } else {
+                  $el.val(texto);
+                }
+              })
+              .wait(tiempo)
+              .log("Texto: " + texto);
+          });
+        break;
+      case "id":
+        cy.get(`#${selector}`)
+          .scrollIntoView()
+          .should("be.visible")
+          .then(($el) => {
+            const existingText = $el.text();
+            if (existingText) {
+              $el.clear();
+            }
+            if ($el.is("input,textarea")) {
+              $el.val(texto);
+            } else {
+              $el.val(texto);
+            }
+          });
+        cy.wait(tiempo);
+        cy.log("Texto: " + texto);
+        break;
+      default:
+        throw new Error(`TIpo de selector "${selectorType}" no valido.`);
+    }
+  }
+);
 ///caso aparte del comandos//
 Cypress.Commands.add("login", (username, password) => {
   cy.get('[data-test="username"]').type(username);
